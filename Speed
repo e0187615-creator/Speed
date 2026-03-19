@@ -1,0 +1,452 @@
+-- made by deepseek (SASEEDZ V2 - SÓ ACELERA QUANDO ANDA)
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Player = Players.LocalPlayer
+
+local speedEnabled = false
+local targetSpeed = 800
+local multi10x = false
+local multi100x = false
+local boosting = false
+
+-- INTERFACE PRINCIPAL
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Name = "SansaSpeedz"
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- FRAME PRINCIPAL (MENU)
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 280, 0, 280)
+MainFrame.Position = UDim2.new(0.5, -140, 0.5, -140)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BackgroundTransparency = 0.1
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
+
+-- TÍTULO
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1, 0, 0, 25)
+TitleLabel.Position = UDim2.new(0, 0, 0, 5)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "options"
+TitleLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.TextSize = 14
+TitleLabel.Parent = MainFrame
+
+-- CÓDIGO
+local CodeLabel = Instance.new("TextLabel")
+CodeLabel.Size = UDim2.new(1, 0, 0, 20)
+CodeLabel.Position = UDim2.new(0, 0, 0, 30)
+CodeLabel.BackgroundTransparency = 1
+CodeLabel.Text = "f6_09kn"
+CodeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+CodeLabel.Font = Enum.Font.Gotham
+CodeLabel.TextSize = 12
+CodeLabel.Parent = MainFrame
+
+-- RATIO
+local RatioLabel = Instance.new("TextLabel")
+RatioLabel.Size = UDim2.new(1, 0, 0, 20)
+RatioLabel.Position = UDim2.new(0, 0, 0, 45)
+RatioLabel.BackgroundTransparency = 1
+RatioLabel.Text = "18x233"
+RatioLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+RatioLabel.Font = Enum.Font.Gotham
+RatioLabel.TextSize = 12
+RatioLabel.Parent = MainFrame
+
+-- HMP (velocidade atual)
+local HMPLabel = Instance.new("TextLabel")
+HMPLabel.Size = UDim2.new(0.5, 0, 0, 20)
+HMPLabel.Position = UDim2.new(0, 10, 0, 65)
+HMPLabel.BackgroundTransparency = 1
+HMPLabel.Text = "HMP:0"
+HMPLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+HMPLabel.Font = Enum.Font.GothamBold
+HMPLabel.TextSize = 14
+HMPLabel.TextXAlignment = Enum.TextXAlignment.Left
+HMPLabel.Parent = MainFrame
+
+-- SansaSpeedz
+local SansaLabel = Instance.new("TextLabel")
+SansaLabel.Size = UDim2.new(0.5, 0, 0, 20)
+SansaLabel.Position = UDim2.new(0.5, 0, 0, 65)
+SansaLabel.BackgroundTransparency = 1
+SansaLabel.Text = "SansaSpeedz"
+SansaLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+SansaLabel.Font = Enum.Font.Gotham
+SansaLabel.TextSize = 12
+SansaLabel.TextXAlignment = Enum.TextXAlignment.Left
+SansaLabel.Parent = MainFrame
+
+-- Speed alvo
+local SpeedLabel = Instance.new("TextLabel")
+SpeedLabel.Size = UDim2.new(0.5, 0, 0, 20)
+SpeedLabel.Position = UDim2.new(0, 10, 0, 85)
+SpeedLabel.BackgroundTransparency = 1
+SpeedLabel.Text = "Speed:800"
+SpeedLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+SpeedLabel.Font = Enum.Font.Gotham
+SpeedLabel.TextSize = 12
+SpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
+SpeedLabel.Parent = MainFrame
+
+-- ============================================
+-- BOTÃO PRINCIPAL (LIGA O SISTEMA)
+-- ============================================
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0, 80, 0, 30)
+ToggleButton.Position = UDim2.new(0.5, -40, 0, 85)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+ToggleButton.Text = "BOOST: OFF"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.TextSize = 12
+ToggleButton.Parent = MainFrame
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 4)
+ToggleCorner.Parent = ToggleButton
+
+-- BOTÃO "-"
+local MinusButton = Instance.new("TextButton")
+MinusButton.Size = UDim2.new(0, 25, 0, 25)
+MinusButton.Position = UDim2.new(0, 10, 0, 125)
+MinusButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+MinusButton.Text = "-"
+MinusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinusButton.Font = Enum.Font.GothamBold
+MinusButton.TextSize = 16
+MinusButton.Parent = MainFrame
+local MinusCorner = Instance.new("UICorner")
+MinusCorner.CornerRadius = UDim.new(0, 4)
+MinusCorner.Parent = MinusButton
+
+-- BOTÃO "+"
+local PlusButton = Instance.new("TextButton")
+PlusButton.Size = UDim2.new(0, 25, 0, 25)
+PlusButton.Position = UDim2.new(0, 45, 0, 125)
+PlusButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+PlusButton.Text = "+"
+PlusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlusButton.Font = Enum.Font.GothamBold
+PlusButton.TextSize = 16
+PlusButton.Parent = MainFrame
+local PlusCorner = Instance.new("UICorner")
+PlusCorner.CornerRadius = UDim.new(0, 4)
+PlusCorner.Parent = PlusButton
+
+-- TEXTBOX VELOCIDADE
+local SpeedTextBox = Instance.new("TextBox")
+SpeedTextBox.Size = UDim2.new(0, 80, 0, 25)
+SpeedTextBox.Position = UDim2.new(0, 80, 0, 125)
+SpeedTextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+SpeedTextBox.PlaceholderText = "Speed"
+SpeedTextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+SpeedTextBox.Text = "800"
+SpeedTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedTextBox.Font = Enum.Font.GothamBold
+SpeedTextBox.TextSize = 12
+SpeedTextBox.Parent = MainFrame
+local TextBoxCorner = Instance.new("UICorner")
+TextBoxCorner.CornerRadius = UDim.new(0, 4)
+TextBoxCorner.Parent = SpeedTextBox
+
+-- BOTÃO APLICAR
+local ApplyButton = Instance.new("TextButton")
+ApplyButton.Size = UDim2.new(0, 50, 0, 25)
+ApplyButton.Position = UDim2.new(0, 170, 0, 125)
+ApplyButton.BackgroundColor3 = Color3.fromRGB(128, 0, 128)
+ApplyButton.Text = "OK"
+ApplyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ApplyButton.Font = Enum.Font.GothamBold
+ApplyButton.TextSize = 12
+ApplyButton.Parent = MainFrame
+local ApplyCorner = Instance.new("UICorner")
+ApplyCorner.CornerRadius = UDim.new(0, 4)
+ApplyCorner.Parent = ApplyButton
+
+-- ============================================
+-- BOTÕES MULTIPLICADORES
+-- ============================================
+local Multi10Button = Instance.new("TextButton")
+Multi10Button.Size = UDim2.new(0, 85, 0, 30)
+Multi10Button.Position = UDim2.new(0, 10, 0, 165)
+Multi10Button.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+Multi10Button.Text = "10x: OFF"
+Multi10Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Multi10Button.Font = Enum.Font.GothamBold
+Multi10Button.TextSize = 11
+Multi10Button.Parent = MainFrame
+local Multi10Corner = Instance.new("UICorner")
+Multi10Corner.CornerRadius = UDim.new(0, 4)
+Multi10Corner.Parent = Multi10Button
+
+local Multi100Button = Instance.new("TextButton")
+Multi100Button.Size = UDim2.new(0, 85, 0, 30)
+Multi100Button.Position = UDim2.new(0, 105, 0, 165)
+Multi100Button.BackgroundColor3 = Color3.fromRGB(150, 0, 150)
+Multi100Button.Text = "100x: OFF"
+Multi100Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Multi100Button.Font = Enum.Font.GothamBold
+Multi100Button.TextSize = 11
+Multi100Button.Parent = MainFrame
+local Multi100Corner = Instance.new("UICorner")
+Multi100Corner.CornerRadius = UDim.new(0, 4)
+Multi100Corner.Parent = Multi100Button
+
+-- ============================================
+-- BOTÃO DE BOOST NA TELA (TOGGLE)
+-- ============================================
+local BoostButton = Instance.new("TextButton")
+BoostButton.Size = UDim2.new(0, 150, 0, 60)
+BoostButton.Position = UDim2.new(0.5, -75, 0.9, -30)
+BoostButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+BoostButton.BackgroundTransparency = 0.2
+BoostButton.Text = "⚡ BOOST OFF ⚡"
+BoostButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BoostButton.Font = Enum.Font.GothamBold
+BoostButton.TextSize = 16
+BoostButton.Visible = false
+BoostButton.Parent = ScreenGui
+local BoostCorner = Instance.new("UICorner")
+BoostCorner.CornerRadius = UDim.new(0, 16)
+BoostCorner.Parent = BoostButton
+
+-- Efeito de brilho
+local BoostStroke = Instance.new("UIStroke")
+BoostStroke.Color = Color3.fromRGB(255, 200, 0)
+BoostStroke.Thickness = 4
+BoostStroke.Transparency = 0.3
+BoostStroke.Parent = BoostButton
+
+-- ============================================
+-- FUNÇÃO PARA DETECTAR SE ESTÁ ANDANDO
+-- ============================================
+local function isPlayerMoving()
+    local character = Player.Character
+    if not character then return false end
+    
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return false end
+    
+    -- Verifica se alguma tecla de movimento está pressionada
+    local moving = false
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.W)
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.A)
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.S)
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.D)
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.Up)
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.Down)
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.Left)
+    moving = moving or UserInputService:IsKeyDown(Enum.KeyCode.Right)
+    
+    -- Verifica se o personagem realmente tem velocidade
+    local rootPart = humanoid.RootPart
+    if rootPart then
+        local velocity = rootPart.Velocity
+        if velocity.Magnitude > 1 then
+            moving = true
+        end
+    end
+    
+    return moving
+end
+
+-- ============================================
+-- CONTROLE DO BOTÃO DE BOOST
+-- ============================================
+BoostButton.MouseButton1Click:Connect(function()
+    if speedEnabled then
+        boosting = not boosting
+        if boosting then
+            BoostButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+            BoostButton.Text = "⚡ BOOST ON ⚡"
+            BoostStroke.Color = Color3.fromRGB(0, 255, 255)
+        else
+            BoostButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0)
+            BoostButton.Text = "⚡ BOOST OFF ⚡"
+            BoostStroke.Color = Color3.fromRGB(255, 200, 0)
+        end
+    end
+end)
+
+-- TEXTO INSTRUTIVO
+local InfoLabel = Instance.new("TextLabel")
+InfoLabel.Size = UDim2.new(1, -20, 0, 20)
+InfoLabel.Position = UDim2.new(0, 10, 0, 235)
+InfoLabel.BackgroundTransparency = 1
+InfoLabel.Text = "Só acelera quando você anda"
+InfoLabel.TextColor3 = Color3.fromRGB(0, 255, 255)
+InfoLabel.Font = Enum.Font.GothamBold
+InfoLabel.TextSize = 12
+InfoLabel.Parent = MainFrame
+
+-- RODAPÉ
+local MadeByLabel = Instance.new("TextLabel")
+MadeByLabel.Size = UDim2.new(1, 0, 0, 20)
+MadeByLabel.Position = UDim2.new(0, 0, 0, 260)
+MadeByLabel.BackgroundTransparency = 1
+MadeByLabel.Text = "(Made by Sans)"
+MadeByLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+MadeByLabel.Font = Enum.Font.Gotham
+MadeByLabel.TextSize = 10
+MadeByLabel.Parent = MainFrame
+
+-- ============================================
+-- LOOP PRINCIPAL (CORRIGIDO)
+-- ============================================
+RunService.Heartbeat:Connect(function()
+    if not speedEnabled then return end
+    
+    local character = Player.Character
+    if not character then return end
+    
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then return end
+    
+    -- Calcula velocidade final
+    local finalSpeed = targetSpeed
+    if multi100x then
+        finalSpeed = targetSpeed * 100
+    elseif multi10x then
+        finalSpeed = targetSpeed * 10
+    end
+    
+    -- SÓ APLICA SE:
+    -- 1. O boost estiver ligado (boosting = true)
+    -- 2. O personagem estiver ANDANDO
+    if boosting and isPlayerMoving() then
+        humanoid.WalkSpeed = finalSpeed
+    else
+        -- Se não estiver andando OU boost desligado, volta ao normal
+        humanoid.WalkSpeed = 16
+    end
+    
+    -- Atualiza HMP
+    HMPLabel.Text = "HMP:" .. math.floor(humanoid.WalkSpeed)
+end)
+
+-- ============================================
+-- FUNÇÕES DOS BOTÕES
+-- ============================================
+
+-- BOOST ON/OFF (SISTEMA)
+ToggleButton.MouseButton1Click:Connect(function()
+    speedEnabled = not speedEnabled
+    if speedEnabled then
+        ToggleButton.Text = "BOOST: ON"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        BoostButton.Visible = true
+    else
+        ToggleButton.Text = "BOOST: OFF"
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        BoostButton.Visible = false
+        boosting = false
+    end
+end)
+
+-- 10x
+Multi10Button.MouseButton1Click:Connect(function()
+    multi10x = not multi10x
+    if multi10x then
+        Multi10Button.Text = "10x: ON"
+        Multi10Button.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+        if multi100x then
+            multi100x = false
+            Multi100Button.Text = "100x: OFF"
+            Multi100Button.BackgroundColor3 = Color3.fromRGB(150, 0, 150)
+        end
+    else
+        Multi10Button.Text = "10x: OFF"
+        Multi10Button.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+    end
+end)
+
+-- 100x
+Multi100Button.MouseButton1Click:Connect(function()
+    multi100x = not multi100x
+    if multi100x then
+        Multi100Button.Text = "100x: ON"
+        Multi100Button.BackgroundColor3 = Color3.fromRGB(200, 0, 200)
+        if multi10x then
+            multi10x = false
+            Multi10Button.Text = "10x: OFF"
+            Multi10Button.BackgroundColor3 = Color3.fromRGB(0, 100, 200)
+        end
+    else
+        Multi100Button.Text = "100x: OFF"
+        Multi100Button.BackgroundColor3 = Color3.fromRGB(150, 0, 150)
+    end
+end)
+
+-- MENOS
+MinusButton.MouseButton1Click:Connect(function()
+    targetSpeed = math.max(16, targetSpeed - 50)
+    SpeedLabel.Text = "Speed:" .. targetSpeed
+    SpeedTextBox.Text = tostring(targetSpeed)
+end)
+
+-- MAIS
+PlusButton.MouseButton1Click:Connect(function()
+    targetSpeed = math.min(1000000, targetSpeed + 50)
+    SpeedLabel.Text = "Speed:" .. targetSpeed
+    SpeedTextBox.Text = tostring(targetSpeed)
+end)
+
+-- TEXTBOX
+local function applySpeed()
+    local num = tonumber(SpeedTextBox.Text)
+    if num then
+        targetSpeed = math.clamp(num, 16, 1000000)
+        SpeedLabel.Text = "Speed:" .. targetSpeed
+        SpeedTextBox.Text = tostring(targetSpeed)
+    end
+end
+
+SpeedTextBox.FocusLost:Connect(function(enter)
+    if enter then applySpeed() end
+end)
+
+ApplyButton.MouseButton1Click:Connect(applySpeed)
+
+-- ARRASTAR
+local dragging, dragStart, startPos
+ToggleButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = ToggleButton.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        ToggleButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        -- Os outros elementos seguem
+        Multi10Button.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y + 160)
+        Multi100Button.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X + 95, startPos.Y.Scale, startPos.Y.Offset + delta.Y + 160)
+    end
+end)
+
+print("✅ SANSASPEEDZ V2 - CORRIGIDO")
+print("📌 Speed alvo: " .. targetSpeed)
+print("🎮 Ligue o BOOST e clique no botão laranja")
+print("🚶 Só acelera quando você ANDA de verdade")
+print("🛑 Não corre mais sozinho!")
